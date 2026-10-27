@@ -6,8 +6,21 @@ const C={keep:null,tz:'D9EAD3',fact:'FFF2CC',lang:'DEEAF6'};
 const LBL={tz:'ДОБАВЛЕНО ПО ТЗ',fact:'ИСПРАВЛЕНО ПО ПЕРВОИСТОЧНИКУ',lang:'ПРАВКА ЯЗЫКА'};
 
 function runs(text,{size=22,font='Times New Roman',color=null,italics=false}={}){
-  return text.split('**').map((part,i)=> new TextRun({
-    text:part, bold:i%2===1, size, font, italics, ...(color?{color}:{})}));
+  const out=[];
+  // сначала выделяем ссылки [[текст|адрес]], потом жирный **…**
+  text.split(/(\[\[[^\]]*\]\])/).forEach(chunk=>{
+    const m=chunk.match(/^\[\[(.*)\|(.*)\]\]$/);
+    if(m){
+      out.push(new ExternalHyperlink({
+        children:[new TextRun({text:m[1],size,font,color:'0563C1',underline:{}})], link:m[2]}));
+      return;
+    }
+    chunk.split('**').forEach((part,i)=>{
+      if(part==='') return;
+      out.push(new TextRun({text:part, bold:i%2===1, size, font, italics, ...(color?{color}:{})}));
+    });
+  });
+  return out.length?out:[new TextRun({text:'',size,font})];
 }
 function shade(tag){ return C[tag] ? {shading:{type:ShadingType.CLEAR,fill:C[tag],color:'auto'}} : {}; }
 function label(tag){
@@ -55,13 +68,17 @@ for(const b of blocks){
     body.push(new Paragraph({children:[new TextRun({text:'',size:12})],spacing:{after:100}}));
     continue;
   }
-  const cls=b.cls||'';
+  const cls=(b.cls||'').split(/\s+/);
+  if(cls.includes('srclink')){
+    body.push(new Paragraph({children:runs(b.text,{size:18,font:'Arial',color:'666666'}),
+      spacing:{after:240}})); lastTag=null; continue;
+  }
   if(cls.includes('src')){
-    body.push(new Paragraph({children:[new TextRun({text:b.text.replace(/\*\*/g,''),italics:true,size:18,font:'Arial',color:'666666'})],
+    body.push(new Paragraph({children:runs(b.text,{size:18,font:'Arial',color:'666666',italics:true}),
       spacing:{after:160},indent:{left:200}})); lastTag=null; continue;
   }
   if(cls.includes('ask')){
-    body.push(new Paragraph({children:[new TextRun({text:b.text.replace(/\*\*/g,''),italics:true,size:18,font:'Arial',color:'C00000'})],
+    body.push(new Paragraph({children:runs(b.text,{size:18,font:'Arial',color:'C00000',italics:true}),
       spacing:{after:160},indent:{left:200}})); lastTag=null; continue;
   }
   if(cls.includes('note')){

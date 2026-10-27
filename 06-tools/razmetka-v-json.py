@@ -26,11 +26,15 @@ class P(HTMLParser):
         if t in ('td','th'): self.incell=True; self.buf=''; return
         if t in ('h1','h2','h3','p','li'):
             self.cur={'type':t,'tag':self.blktag,'cls':c}; self.buf=''
+        if t=='a':
+            href=dict(attrs).get('href','')
+            self.buf+='[['; self.href=href; return
         if t=='b' or t=='strong': self.buf+='**'
     def handle_endtag(self,t):
         if self.skip:
             if t=='div': self.skip-=1
             return
+        if t=='a': self.buf+='|'+getattr(self,'href','')+']]'; return
         if t=='b' or t=='strong': self.buf+='**'; return
         if t in ('td','th'):
             self.row.append(self.buf.strip()); self.incell=False; self.buf=''; return
