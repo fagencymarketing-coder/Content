@@ -1,6 +1,6 @@
 const d = require('docx');
 const {Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell,
-       WidthType, ShadingType, BorderStyle, AlignmentType} = d;
+       WidthType, ShadingType, BorderStyle, AlignmentType, ExternalHyperlink} = d;
 const fs = require('fs');
 
 const C = {keep:null, tz:'D9EAD3', fact:'FFF2CC', lang:'DEEAF6'};
@@ -27,6 +27,12 @@ function src(text) {
     children:[new TextRun({text:'Источник: '+text, italics:true, size:18, font:'Arial', color:'666666'})],
     spacing:{after:160},
     indent:{left:200},
+  });
+}
+function link(text, url, size=18, font='Arial') {
+  return new ExternalHyperlink({
+    children:[new TextRun({text, size, font, color:'0563C1', underline:{}})],
+    link:url,
   });
 }
 function h(text, lvl=HeadingLevel.HEADING_2) {
@@ -68,7 +74,11 @@ body.push(new Paragraph({
   children:[new TextRun({text:'Как проверить свою бухгалтерию — доработка статьи', bold:true, size:32, font:'Arial'})],
   spacing:{after:120}}));
 body.push(new Paragraph({
-  children:[new TextRun({text:'Исходная статья: 1-plus-1.ru/news/kak-proverit-svoyu-bukhgalteriyu/ от 28.11.2023. ТЗ от 27.10.2026, пункт 1 из 8. Фактура сверена 27.10.2026.', size:18, font:'Arial', color:'666666'})],
+  children:[
+    new TextRun({text:'Исходная статья: ', size:18, font:'Arial', color:'666666'}),
+    link('1-plus-1.ru/news/kak-proverit-svoyu-bukhgalteriyu/', 'https://1-plus-1.ru/news/kak-proverit-svoyu-bukhgalteriyu/'),
+    new TextRun({text:' от 28.11.2023. ТЗ от 27.10.2026, пункт 1 из 8. Фактура сверена 27.10.2026.', size:18, font:'Arial', color:'666666'}),
+  ],
   spacing:{after:240}}));
 
 // ЛЕГЕНДА
@@ -204,7 +214,10 @@ body.push(...bullets([
  'ошибки в зарплате и взносах — и сотрудники недополучают деньги, и компания получает претензии.'], 'tz'));
 body.push(src('наша статья «Ошибки бухгалтера», фактура сверена 22.09.2026. Уровень — практика компании, не норма закона'));
 body.push(p('Подробный разбор каждой ошибки с последствиями и порядком исправления — в отдельной статье об ошибках бухгалтера.', {tag:'tz'}));
-body.push(new Paragraph({children:[new TextRun({text:'Слова «об ошибках бухгалтера» сделать ссылкой на /news/samye-rasprostranennye-kosyaki-v-bukhgalterii-kotorye-my-vyyavlyaem-pri-auditakh-i-chem-oni-grozyat/', italics:true, size:18, font:'Arial', color:'666666'})], spacing:{after:160}, indent:{left:200}}));
+body.push(new Paragraph({children:[
+  new TextRun({text:'Слова «об ошибках бухгалтера» сделать ссылкой на ', italics:true, size:18, font:'Arial', color:'666666'}),
+  link('/news/samye-rasprostranennye-kosyaki-v-bukhgalterii-kotorye-my-vyyavlyaem-pri-auditakh-i-chem-oni-grozyat/', 'https://1-plus-1.ru/news/samye-rasprostranennye-kosyaki-v-bukhgalterii-kotorye-my-vyyavlyaem-pri-auditakh-i-chem-oni-grozyat/'),
+], spacing:{after:160}, indent:{left:200}}));
 body.push(p('Отдельно стоит сказать: большинство этих нарушений не выглядят страшно по одному. Опасны они накопленным эффектом за те самые три года, которые вправе проверить инспекция.', {tag:'tz'}));
 
 // КОГДА
@@ -254,13 +267,25 @@ body.push(table([
  ['Штраф за неуплату налога и условие освобождения от него','ст. 122 НК РФ'],
 ], [4600,4400], 'tz'));
 body.push(new Paragraph({children:[new TextRun({text:'', size:12})], spacing:{after:80}}));
-body.push(p('Фактура сверена 27.10.2026.', {tag:'tz', size:18}));
+body.push(new Paragraph({children:[
+  new TextRun({text:'Тексты норм: ', size:18, font:'Arial', color:'666666'}),
+  link('ст. 5 закона № 307-ФЗ', 'https://www.consultant.ru/document/cons_doc_LAW_83311/e10238792447500445e2f7cb3f3a6d0f37c74402/'),
+  new TextRun({text:'  ·  ', size:18, font:'Arial', color:'666666'}),
+  link('п. 4 ст. 89 НК РФ', 'https://www.consultant.ru/document/cons_doc_LAW_19671/575046595bc7e01efd9a0a0d2f6c0ffb64442868/'),
+  new TextRun({text:'  ·  ', size:18, font:'Arial', color:'666666'}),
+  link('ст. 122 НК РФ', 'https://www.consultant.ru/document/cons_doc_LAW_19671/1bab8cfd8c4da82e8af44f7ebcbfa1716bac9586/'),
+], spacing:{after:80}, indent:{left:200}}));
+body.push(p('Фактура сверена 27.10.2026. Внешние ссылки на странице сайта закрыть: rel="nofollow noindex".', {tag:'tz', size:18}));
 
 // CTA
 body.push(h('Призыв к действию'));
 body.push(label('tz'));
 body.push(p('Проверка учёта — это не только бухгалтерия: налоговые риски, оформление документов и оценка нагрузки на сотрудников лежат на стыке бухгалтерии, налогов и права. Если хотите понять, в каком состоянии ваш учёт и что инспекция может найти за три года, оставьте заявку на инициативный аудит: определим объём проверки под вашу задачу и покажем, что и в каком порядке исправлять.', {tag:'tz'}));
-body.push(new Paragraph({children:[new TextRun({text:'Слова «инициативный аудит» сделать ссылкой на /finansoviy-konsalting/initsiativnyy-audit-bukhgalterii/. Контактов в призыве нет — так принято в статьях на сайт.', italics:true, size:18, font:'Arial', color:'666666'})], spacing:{after:200}, indent:{left:200}}));
+body.push(new Paragraph({children:[
+  new TextRun({text:'Слова «инициативный аудит» сделать ссылкой на ', italics:true, size:18, font:'Arial', color:'666666'}),
+  link('/finansoviy-konsalting/initsiativnyy-audit-bukhgalterii/', 'https://1-plus-1.ru/finansoviy-konsalting/initsiativnyy-audit-bukhgalterii/'),
+  new TextRun({text:'. Контактов в призыве нет — так принято в статьях на сайт.', italics:true, size:18, font:'Arial', color:'666666'}),
+], spacing:{after:200}, indent:{left:200}}));
 
 // ХВОСТ
 body.push(new Paragraph({border:{bottom:{style:BorderStyle.SINGLE, size:6, color:'BBBBBB'}}, spacing:{before:200, after:200}}));
