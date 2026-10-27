@@ -26,6 +26,17 @@ L={
  'Федерального закона от 28.11.2025 № 425-ФЗ':'https://www.consultant.ru/document/cons_doc_LAW_520020/',
  'ФЗ от 28.11.2025 № 425-ФЗ':'https://www.consultant.ru/document/cons_doc_LAW_520020/',
  'письмо ФНС России от 27.12.2024 № СД-4-3/14727@':'https://www.consultant.ru/document/cons_doc_LAW_500174/',
+ 'п. 1 ст. 224 НК РФ':'https://www.consultant.ru/document/cons_doc_LAW_28165/3e4bbd6dd9fb5dd4e9394f447653506e1d6fa3a9/',
+ 'ст. 425 НК РФ':'https://www.consultant.ru/document/cons_doc_LAW_28165/a3f603ffd57b1431ed51e1693ba710093347235d/',
+ 'ст. 427 НК РФ':'https://www.consultant.ru/document/cons_doc_LAW_28165/c5c16c86f95c5db63601047b1c0a5942bd77c824/',
+ 'п. 2.4 и п. 13.3 ст. 427 НК РФ':'https://www.consultant.ru/document/cons_doc_LAW_28165/c5c16c86f95c5db63601047b1c0a5942bd77c824/',
+ 'п. 2.2-2, п. 13.2 и п. 2.5 ст. 427 НК РФ':'https://www.consultant.ru/document/cons_doc_LAW_28165/c5c16c86f95c5db63601047b1c0a5942bd77c824/',
+ 'подп. 10 п. 1, п. 2.2, п. 2.2-2, п. 2.4, п. 7, п. 9, п. 13.1 ст. 427 НК РФ':'https://www.consultant.ru/document/cons_doc_LAW_28165/c5c16c86f95c5db63601047b1c0a5942bd77c824/',
+ 'п. 2.2-2 ст. 427 НК РФ':'https://www.consultant.ru/document/cons_doc_LAW_28165/c5c16c86f95c5db63601047b1c0a5942bd77c824/',
+ 'постановление Правительства РФ от 31.10.2025 № 1705':'https://base.garant.ru/412984357/',
+ 'распоряжение Правительства РФ от 27.12.2025 № 4125-р':'https://www.consultant.ru/document/cons_doc_LAW_523172/6f2a657934602e36fb055b5d6ecb0e23ca727dba/',
+ 'распоряжения Правительства РФ от 27.12.2025 № 4125-р':'https://www.consultant.ru/document/cons_doc_LAW_523172/6f2a657934602e36fb055b5d6ecb0e23ca727dba/',
+ 'ст. 164 НК РФ':'https://www.consultant.ru/document/cons_doc_LAW_28165/35cc6698564adc4507baa31c9cfdbb4f2516d068/',
  'Федеральный закон от 07.08.2001 № 115-ФЗ':'https://www.consultant.ru/document/cons_doc_LAW_32834/',
 }
 
