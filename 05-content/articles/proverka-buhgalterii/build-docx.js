@@ -73,13 +73,7 @@ const body = [];
 body.push(new Paragraph({
   children:[new TextRun({text:'Как проверить свою бухгалтерию — доработка статьи', bold:true, size:32, font:'Arial'})],
   spacing:{after:120}}));
-body.push(new Paragraph({
-  children:[
-    new TextRun({text:'Исходная статья: ', size:18, font:'Arial', color:'666666'}),
-    link('1-plus-1.ru/news/kak-proverit-svoyu-bukhgalteriyu/', 'https://1-plus-1.ru/news/kak-proverit-svoyu-bukhgalteriyu/'),
-    new TextRun({text:' от 28.11.2023. ТЗ от 27.10.2026, пункт 1 из 8. Фактура сверена 27.10.2026.', size:18, font:'Arial', color:'666666'}),
-  ],
-  spacing:{after:240}}));
+
 
 // ЛЕГЕНДА
 body.push(new Paragraph({children:[new TextRun({text:'Как читать документ', bold:true, size:24, font:'Arial'})], spacing:{after:120}}));
