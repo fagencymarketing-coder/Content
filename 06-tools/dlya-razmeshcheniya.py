@@ -3,8 +3,8 @@ import json,re,sys,io,random
 src,dst=sys.argv[1],sys.argv[2]
 b=json.load(io.open(src,encoding='utf-8'))
 
-SKIP_SECTIONS={'Ответы редактора на вопросы','Решение по расхождению','Что нужно от вас',
-               'Метаданные для размещения','Что осталось решить','Как читать'}
+# Служебные блоки определяются по метке ending из парсера, а не по названию:
+# название раздела можно переименовать, и фильтр по нему молча перестанет работать.
 out=[]; skip=False; links=[]
 
 def links_out(t):
@@ -22,14 +22,12 @@ prev_list=None
 for x in b:
     cls=(x.get('cls') or '')
     typ=x.get('type')
+    if 'ending' in cls.split(): continue          # всё после статьи — для редактора
     if typ in ('h1','h2','h3'):
         title=md(x.get('text','')).strip()
-        skip = title in SKIP_SECTIONS
-        if skip: continue
         tag={'h1':'[H1]','h2':'[H2]','h3':'[H3]'}[typ]
         out.append(('head',tag,title))
         continue
-    if skip: continue
     if 'src' in cls.split() or 'ask' in cls.split() or 'note' in cls.split() or 'eyebrow' in cls.split() or 'srclink' in cls.split():
         continue
     if typ=='table':
@@ -106,9 +104,10 @@ for item in out:
 flush_list()
 
 # подпись: случайный эксперт из списка в kompaniya.md
-EKSPERTY=['Мария Кошляк','Марина Данилова','Елена Веневцева','Елена Хохлова']
+# имена сразу в творительном падеже: «проверен экспертом … кем?»
+EKSPERTY=['Марией Кошляк','Мариной Даниловой','Еленой Веневцевой','Еленой Хохловой']
 A('【ПОДПИСЬ: вывести в конце статьи, отдельной строкой】')
-A(f'Материал подготовлен при помощи ИИ, проверен экспертом 1+1 — {random.choice(EKSPERTY)}.')
+A(f'Материал подготовлен при помощи ИИ, проверен экспертом 1+1 {random.choice(EKSPERTY)}.')
 A('')
 A('─'*70)
 A('')

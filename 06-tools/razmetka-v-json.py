@@ -20,12 +20,15 @@ class P(HTMLParser):
             for k in ('tz','fact','lang','keep'):
                 if k in c.split(): self.blktag=k; break
             return
-        if t=='div' and ('tbl' in c or 'ending' in c or 'meta-list' in c or 'doc' in c): return
+        if t=='div' and 'ending' in c.split():
+            self.inending=True; return
+        if t=='div' and ('tbl' in c or 'meta-list' in c or 'doc' in c): return
         if t=='table': self.table=[]; return
         if t=='tr': self.row=[]; return
         if t in ('td','th'): self.incell=True; self.buf=''; return
         if t in ('h1','h2','h3','p','li'):
-            self.cur={'type':t,'tag':self.blktag,'cls':c}; self.buf=''
+            cls=c+(' ending' if getattr(self,'inending',False) else '')
+            self.cur={'type':t,'tag':self.blktag,'cls':cls.strip()}; self.buf=''
         if t=='a':
             href=dict(attrs).get('href','')
             self.buf+='[['; self.href=href; return
@@ -54,7 +57,8 @@ class P(HTMLParser):
             if self.row: self.table.append(self.row)
             self.row=None; return
         if t=='table':
-            self.out.append({'type':'table','tag':self.blktag,'rows':self.table}); self.table=None; return
+            self.out.append({'type':'table','tag':self.blktag,'rows':self.table,
+                             'cls':'ending' if getattr(self,'inending',False) else ''}); self.table=None; return
         if t in ('h1','h2','h3','p','li') and self.cur:
             txt=re.sub(r'\s+',' ',self.buf).strip()
             if txt:
