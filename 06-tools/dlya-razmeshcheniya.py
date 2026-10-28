@@ -22,7 +22,7 @@ prev_list=None
 for x in b:
     cls=(x.get('cls') or '')
     typ=x.get('type')
-    if 'ending' in cls.split(): continue          # всё после статьи — для редактора
+    if {'ending','pre'} & set(cls.split()): continue   # до и после статьи — для редактора
     if typ in ('h1','h2','h3'):
         title=md(x.get('text','')).strip()
         tag={'h1':'[H1]','h2':'[H2]','h3':'[H3]'}[typ]

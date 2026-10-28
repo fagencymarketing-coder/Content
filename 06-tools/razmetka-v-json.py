@@ -22,12 +22,15 @@ class P(HTMLParser):
             return
         if t=='div' and 'ending' in c.split():
             self.inending=True; return
-        if t=='div' and ('tbl' in c or 'meta-list' in c or 'doc' in c): return
+        if t=='div' and 'doc' in c.split(): self.indoc=True; return
+        if t=='div' and ('tbl' in c or 'meta-list' in c): return
         if t=='table': self.table=[]; return
         if t=='tr': self.row=[]; return
         if t in ('td','th'): self.incell=True; self.buf=''; return
         if t in ('h1','h2','h3','p','li'):
-            cls=c+(' ending' if getattr(self,'inending',False) else '')
+            cls=c
+            if getattr(self,'inending',False): cls+=' ending'
+            elif not getattr(self,'indoc',False) and t!='h1': cls+=' pre'
             self.cur={'type':t,'tag':self.blktag,'cls':cls.strip()}; self.buf=''
         if t=='a':
             href=dict(attrs).get('href','')
