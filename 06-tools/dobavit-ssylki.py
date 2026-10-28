@@ -53,9 +53,14 @@ L={
 }
 
 def linkify(seg):
+    # не трогаем участки, которые уже внутри <a>…</a>
+    spans=[(m.start(),m.end()) for m in re.finditer(r'<a\b[^>]*>.*?</a>', seg, re.S)]
+    def inside(i): return any(a<=i<b for a,b in spans)
     for txt in sorted(L, key=len, reverse=True):
-        if txt in seg and f'>{txt}<' not in seg and 'href' not in seg[max(0,seg.find(txt)-120):seg.find(txt)]:
-            seg = seg.replace(txt, f'<a href="{L[txt]}">{txt}</a>', 1)
+        i=seg.find(txt)
+        if i==-1 or inside(i): continue
+        seg = seg[:i] + f'<a href="{L[txt]}">{txt}</a>' + seg[i+len(txt):]
+        spans=[(m.start(),m.end()) for m in re.finditer(r'<a\b[^>]*>.*?</a>', seg, re.S)]
     return seg
 
 p=sys.argv[1]

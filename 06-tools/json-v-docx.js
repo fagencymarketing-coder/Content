@@ -1,12 +1,50 @@
 const d=require('docx'); const fs=require('fs');
 const {Document,Packer,Paragraph,TextRun,HeadingLevel,Table,TableRow,TableCell,
-       WidthType,ShadingType,BorderStyle,ExternalHyperlink}=d;
+       WidthType,ShadingType,BorderStyle,ExternalHyperlink,
+       InsertedTextRun,DeletedTextRun,CommentRangeStart,CommentRangeEnd,CommentReference}=d;
+
+const REVIEW = process.env.REVIEW === '1';
+const comments = [];
+let cid = 0;
+const AUTHOR = '1+1, в ответ на правки';
+const DATE = new Date();
 
 const C={keep:null,tz:'D9EAD3',fact:'FFF2CC',lang:'DEEAF6'};
 const LBL={tz:'ДОБАВЛЕНО ПО ТЗ',fact:'ИСПРАВЛЕНО ПО ПЕРВОИСТОЧНИКУ',lang:'ПРАВКА ЯЗЫКА'};
 
 function runs(text,{size=22,font='Times New Roman',color=null,italics=false}={}){
   const out=[];
+  // режим рецензирования: {{DEL:…}} — удалено, {{INS@метка:…}} — вставлено
+  if(/\{\{(DEL|INS)/.test(text)){
+    const re=/\{\{(DEL|INS)(@[^:]*)?:([\s\S]*?)\}\}/g;
+    let last=0,m;
+    while((m=re.exec(text))!==null){
+      const before=text.slice(last,m.index);
+      if(before) out.push(...runs(before,{size,font,color,italics}));
+      const body=m[3];
+      if(m[1]==='DEL'){
+        if(body) out.push(new DeletedTextRun({text:body.replace(/\*\*/g,''),size,font,
+          id:cid++, author:AUTHOR, date:DATE}));
+      } else {
+        const label=m[2]?m[2].slice(1):'';
+        if(label){
+          const myId=comments.length;
+          comments.push({id:myId, author:AUTHOR, date:DATE,
+            children:[new Paragraph({children:[new TextRun({text:label,size:18,font:'Arial'})]})]});
+          out.push(new CommentRangeStart(myId));
+          if(body) out.push(...insRuns(body,{size,font}));
+          out.push(new CommentRangeEnd(myId));
+          out.push(new TextRun({children:[new CommentReference(myId)]}));
+        } else if(body){
+          out.push(...insRuns(body,{size,font}));
+        }
+      }
+      last=re.lastIndex;
+    }
+    const tail=text.slice(last);
+    if(tail) out.push(...runs(tail,{size,font,color,italics}));
+    return out.length?out:[new TextRun({text:'',size,font})];
+  }
   // сначала выделяем ссылки [[текст|адрес]], потом жирный **…**
   text.split(/(\[\[[^\]]*\]\])/).forEach(chunk=>{
     const m=chunk.match(/^\[\[(.*)\|(.*)\]\]$/);
@@ -21,6 +59,10 @@ function runs(text,{size=22,font='Times New Roman',color=null,italics=false}={})
     });
   });
   return out.length?out:[new TextRun({text:'',size,font})];
+}
+function insRuns(body,{size,font}){
+  return body.split('**').filter(x=>x!=='').map((part,i)=>
+    new InsertedTextRun({text:part, bold:i%2===1, size, font, id:cid++, author:AUTHOR, date:DATE}));
 }
 function shade(tag){ return C[tag] ? {shading:{type:ShadingType.CLEAR,fill:C[tag],color:'auto'}} : {}; }
 function label(tag){
@@ -95,5 +137,6 @@ for(const b of blocks){
 }
 
 const doc=new Document({creator:'1+1',title:process.argv[4]||'Доработка статьи',
+  comments:{children:comments},
   sections:[{properties:{page:{margin:{top:1000,bottom:1000,left:1100,right:1100}}},children:body}]});
 Packer.toBuffer(doc).then(b=>{fs.writeFileSync(process.argv[3],b);console.log('written',b.length);});
