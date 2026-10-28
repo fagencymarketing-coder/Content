@@ -24,6 +24,7 @@
   blog-sayta.md             разбор блога сайта: жанры, занятые темы
   celevaya-auditoriya.md    сегменты, боли из CustDev              → задача 1
   keysy.md, keysy-tablica.xlsx  реальные кейсы с цифрами
+  praktika-uslug.md         как устроены наши услуги на самом деле
   formaty.md                пять форматов, статья и пост, эмодзи
 
 03-seo/
