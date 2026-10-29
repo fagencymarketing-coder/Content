@@ -7,6 +7,23 @@ b=json.load(io.open(src,encoding='utf-8'))
 # название раздела можно переименовать, и фильтр по нему молча перестанет работать.
 out=[]; skip=False; links=[]
 
+# Метаданные берутся из блока «Метаданные для размещения» на странице, а не из кода:
+# раньше они были прописаны здесь намертво и во все статьи попадали метаданные статьи 1.
+META={}
+for x in b:
+    txt=re.sub(r'\*\*','',(x.get('text') or '')).strip()
+    txt=re.sub(r'\[\[([^|\]]*)\|[^\]]*\]\]',r'\1',txt)
+    for key,pat in (('title',r'^Title\s*(?:\([^)]*\))?\s*:\s*(.+)$'),
+                    ('descr',r'^Description\s*(?:\([^)]*\))?\s*:\s*(.+)$'),
+                    ('url',  r'^URL\s*:\s*(.+)$')):
+        m=re.match(pat,txt)
+        if m and key not in META: META[key]=m.group(1).strip()
+missing=[k for k in ('title','descr','url') if k not in META]
+if missing:
+    raise SystemExit('не найдены метаданные на странице: '+', '.join(missing)+
+                     '. Добавьте блок «Метаданные для размещения» со строками Title, Description, URL.')
+
+
 def links_out(t):
     """[[текст|url]] -> текст, со сбором ссылок"""
     def f(m):
@@ -57,9 +74,9 @@ A('10. Призыв к действию выделить визуально — 
 A('')
 A('─'*70)
 A('')
-A('【META TITLE: Как проверить бухгалтерию: инициативный аудит компании】')
-A('【META DESCRIPTION: Зачем проверять работу бухгалтерии, как это сделать самому и что покажет инициативный аудит: виды, порядок проведения и ошибки, которые находят чаще всего.】')
-A('【URL: /news/kak-proverit-svoyu-bukhgalteriyu/ — адрес прежний, не менять】')
+A('【META TITLE: '+META['title']+'】')
+A('【META DESCRIPTION: '+META['descr']+'】')
+A('【URL: '+META['url']+'】')
 A('')
 A('─'*70)
 A('')
