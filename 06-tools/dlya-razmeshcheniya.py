@@ -18,6 +18,11 @@ for x in b:
                     ('url',  r'^URL\s*:\s*(.+)$')):
         m=re.match(pat,txt)
         if m and key not in META: META[key]=m.group(1).strip()
+ZAMENA=''
+for x in b:
+    if 'srclink' in (x.get('cls') or '').split():
+        m=re.search(r'\[\[[^|\]]*\|([^\]]*)\]\]', x.get('text') or '')
+        if m: ZAMENA=m.group(1).strip(); break
 missing=[k for k in ('title','descr','url') if k not in META]
 if missing:
     raise SystemExit('не найдены метаданные на странице: '+', '.join(missing)+
@@ -58,6 +63,12 @@ for x in b:
 
 L=[]
 A=L.append
+if ZAMENA:
+    A('【ЭТОТ ТЕКСТ ЗАМЕНЯЕТ СТАТЬЮ НА САЙТЕ: '+ZAMENA+'】')
+    A('【Адрес страницы не меняется — публикуется на том же URL, поверх старого текста.】')
+    A('')
+    A('─'*70)
+    A('')
 A('ПАМЯТКА ДЛЯ РАЗМЕЩЕНИЯ')
 A('')
 A('1. Всё в квадратных скобках [ ] и в блоках 【 】 — служебное, на страницу не идёт.')
