@@ -10,7 +10,17 @@ const SKIP_SECTIONS=['Содержание','Источники','Читать �
 const BODY='Times New Roman', HEAD='Times New Roman';
 const clean=t=>String(t||'').replace(/\[\[([^|\]]*)\|[^\]]*\]\]/g,'$1').replace(/\s+/g,' ').trim();
 
+const EMO=/[\u231A-\u23FF\u2600-\u27BF\uFE0F\u{1F300}-\u{1FAFF}]/u;
 function runs(text,{size=22,bold=false,font=BODY}={}){
+  // значок часов и прочие символы — шрифтом, в котором они есть
+  if(EMO.test(text)){
+    const out=[];
+    for(const part of String(text).split(/([\u231A-\u23FF\u2600-\u27BF\uFE0F\u{1F300}-\u{1FAFF}]+)/u)){
+      if(!part) continue;
+      out.push(new TextRun({text:part,bold,size,font:EMO.test(part)?'Segoe UI Symbol':font}));
+    }
+    return out;
+  }
   // **жирный** внутри абзаца
   // пустые куски не выбрасываются: от их позиции зависит, что станет жирным
   return String(text).split('**').map((part,i)=>
