@@ -8,7 +8,7 @@ const SLUZH=['ending','pre','note','ask','src','srclink','eyebrow'];
 const SKIP_SECTIONS=['Содержание','Источники','Читать ещё','Что нужно от вас','Метаданные для размещения'];
 
 const BODY='Times New Roman', HEAD='Times New Roman';
-const clean=t=>String(t||'').replace(/\[\[([^|\]]*)\|[^\]]*\]\]/g,'$1').replace(/\s+/g,' ').trim();
+const clean=t=>String(t||'').replace(/\[\[([^|\]]*)\|[^\]]*\]\]/g,'$1').replace(/[ \t]+/g,' ').replace(/ *\n */g,'\n').trim();
 
 const EMO=/[\u231A-\u23FF\u2600-\u27BF\uFE0F\u{1F300}-\u{1FAFF}]/u;
 function runs(text,{size=22,bold=false,font=BODY}={}){
@@ -30,7 +30,8 @@ const BRD={style:BorderStyle.SINGLE,size:4,color:'BFBFBF'};
 function cell(text,{bold=false,w=3000,fill=null}={}){
   const o={width:{size:w,type:WidthType.DXA},
     margins:{top:60,bottom:60,left:120,right:120},
-    children:[new Paragraph({children:runs(text,{size:20,bold}),spacing:{after:0,line:260}})]};
+    children:String(text).split('\n').map(line=>
+      new Paragraph({children:runs(line,{size:20,bold}),spacing:{after:0,line:260}}))};
   if(fill) o.shading={type:ShadingType.CLEAR,fill,color:'auto'};
   return new TableCell(o);
 }

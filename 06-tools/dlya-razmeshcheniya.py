@@ -53,7 +53,7 @@ for x in b:
     if 'src' in cls.split() or 'ask' in cls.split() or 'note' in cls.split() or 'eyebrow' in cls.split() or 'srclink' in cls.split():
         continue
     if typ=='table':
-        rows=[[md(c) for c in r] for r in x['rows']]
+        rows=[[md(c).replace('\n','; ') for c in r] for r in x['rows']]
         out.append(('table',rows))
         continue
     if typ=='li':

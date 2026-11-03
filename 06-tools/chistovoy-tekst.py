@@ -21,7 +21,7 @@ for x in b:
     typ=x.get('type')
     if typ=='table':
         if skip_h2: continue
-        rows=[[clean(c) for c in r] for r in x['rows']]
+        rows=[[clean(c.replace('\n','; ')) for c in r] for r in x['rows']]
         w=[max(len(r[i]) for r in rows) for i in range(len(rows[0]))]
         for n,r in enumerate(rows):
             A('  '.join(c.ljust(w[i]) for i,c in enumerate(r)).rstrip())

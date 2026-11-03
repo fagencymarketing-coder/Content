@@ -71,7 +71,8 @@ function label(tag){
 }
 function cell(text,{bold=false,w=3000,fill=null}={}){
   const o={width:{size:w,type:WidthType.DXA},
-    children:[new Paragraph({children:runs(text,{size:20}).map(r=>r),spacing:{after:40}})]};
+    children:String(text).split('\n').map(line=>
+      new Paragraph({children:runs(line,{size:20}),spacing:{after:40}}))};
   if(bold) o.children=[new Paragraph({children:[new TextRun({text:text.replace(/\*\*/g,''),bold:true,size:20,font:'Times New Roman'})],spacing:{after:40}})];
   if(fill) o.shading={type:ShadingType.CLEAR,fill,color:'auto'};
   return new TableCell(o);

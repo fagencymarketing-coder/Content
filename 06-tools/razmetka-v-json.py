@@ -10,6 +10,9 @@ class P(HTMLParser):
     def cls(self,attrs): return dict(attrs).get('class','')
     def handle_starttag(self,t,attrs):
         c=self.cls(attrs)
+        # <br> в ячейке таблицы — перенос строки, иначе строки склеиваются
+        if t=='br' and self.inwrap and (self.incell or self.cur is not None):
+            self.buf+='\n'; return
         if t=='div' and 'wrap' in c: self.inwrap=True; return
         if not self.inwrap: return
         if t=='div' and ('legend' in c or 'filters' in c): self.skip+=1; return
@@ -55,7 +58,7 @@ class P(HTMLParser):
             return
         if t=='b' or t=='strong': self.buf+='**'; return
         if t in ('td','th'):
-            self.row.append(self.buf.strip()); self.incell=False; self.buf=''; return
+            self.row.append(self.buf.strip('\n ').replace(' \n','\n').replace('\n ','\n')); self.incell=False; self.buf=''; return
         if t=='tr':
             if self.row: self.table.append(self.row)
             self.row=None; return
@@ -67,6 +70,10 @@ class P(HTMLParser):
             if txt:
                 self.cur['text']=txt; self.out.append(self.cur)
             self.cur=None; self.buf=''
+    def handle_startendtag(self,t,a):
+        # <br> внутри ячейки таблицы — перенос строки, а не склейка слов
+        if t=='br' and (self.incell or self.cur is not None): self.buf+='\n'
+        else: self.handle_starttag(t,a)
     def handle_data(self,d):
         if self.skip or not self.inwrap: return
         if self.incell or self.cur is not None: self.buf+=d
