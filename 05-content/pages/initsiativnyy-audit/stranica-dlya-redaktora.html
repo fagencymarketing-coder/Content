@@ -1,0 +1,258 @@
+<title>Инициативный аудит — блоки для страницы</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Макет: одна колонка документа; слева цветная полоса статуса абзаца, под фактами — строка источника */
+:root{
+  --bg:#f7f7f4; --surface:#ffffff; --fg:#23251f; --muted:#6b6f63; --line:#dedfd6;
+  --accent:#6f7a2e; --accent-soft:#eef0df; --flag:#c2185b; --on-accent:#ffffff;
+  --keep-bar:#c9cbc0; --keep-bg:transparent;
+  --tz-bar:#6f9c4a; --tz-bg:#edf4e6;
+  --fact-bar:#c9a227; --fact-bg:#fbf3dc;
+  --lang-bar:#4a7d9c; --lang-bg:#e7f0f6;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1a1c18; --surface:#222520; --fg:#e6e7df; --muted:#9a9e90; --line:#363a31;
+  --accent:#a8b863; --accent-soft:#2b3022; --flag:#ff6f9f; --on-accent:#1a1c18;
+  --keep-bar:#4a4e44; --keep-bg:transparent;
+  --tz-bar:#6f9c4a; --tz-bg:#232e1d;
+  --fact-bar:#c9a227; --fact-bg:#322a16;
+  --lang-bar:#4a7d9c; --lang-bg:#1b2730;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1c18; --surface:#222520; --fg:#e6e7df; --muted:#9a9e90; --line:#363a31;
+  --accent:#a8b863; --accent-soft:#2b3022; --flag:#ff6f9f; --on-accent:#1a1c18;
+  --keep-bar:#4a4e44; --keep-bg:transparent;
+  --tz-bar:#6f9c4a; --tz-bg:#232e1d;
+  --fact-bar:#c9a227; --fact-bg:#322a16;
+  --lang-bar:#4a7d9c; --lang-bg:#1b2730;
+  color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);margin:0}
+.wrap{max-width:46rem;margin:0 auto;padding-block:2rem 4rem;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 .6rem}
+h1{font-family:var(--serif);font-size:clamp(1.7rem,4.5vw,2.3rem);line-height:1.15;margin:0 0 .7rem;text-wrap:balance;font-weight:600}
+.meta{color:var(--muted);font-size:.85rem;line-height:1.5;margin:0 0 1.8rem}
+
+.legend{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1rem 1.1rem;margin-bottom:1.2rem}
+.legend h2{font-size:.95rem;margin:0 0 .7rem;font-weight:600}
+.legend ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+.legend li{display:flex;gap:.6rem;align-items:flex-start;font-size:.86rem;line-height:1.45}
+.chip{flex:0 0 auto;width:1.1rem;height:1.1rem;border-radius:2px;border:1px solid var(--line);margin-top:.1rem}
+.chip.keep{background:var(--surface)}.chip.tz{background:var(--tz-bg);border-color:var(--tz-bar)}
+.chip.fact{background:var(--fact-bg);border-color:var(--fact-bar)}.chip.lang{background:var(--lang-bg);border-color:var(--lang-bar)}
+
+.filters{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:2rem}
+.filters button{font-family:var(--sans);font-size:.82rem;padding:.42rem .8rem;border-radius:3px;
+  border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.filters button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.doc h2{font-family:var(--serif);font-size:1.3rem;margin:2.2rem 0 .8rem;font-weight:600;text-wrap:balance;
+  padding-bottom:.35rem;border-bottom:1px solid var(--line)}
+.doc h3{font-size:1rem;margin:1.4rem 0 .5rem;font-weight:600}
+
+.blk{border-left:3px solid var(--keep-bar);padding:.25rem 0 .25rem .9rem;margin:0 0 .9rem}
+.blk.tz{border-color:var(--tz-bar);background:var(--tz-bg)}
+.blk.fact{border-color:var(--fact-bar);background:var(--fact-bg)}
+.blk.lang{border-color:var(--lang-bar);background:var(--lang-bg)}
+.blk.tz,.blk.fact,.blk.lang{padding:.6rem .9rem .6rem .9rem;border-radius:0 3px 3px 0}
+.blk p{font-family:var(--serif);font-size:1.03rem;line-height:1.65;margin:0 0 .7rem}
+.blk p:last-child{margin-bottom:0}
+.blk ul,.blk ol{font-family:var(--serif);font-size:1.03rem;line-height:1.6;margin:.2rem 0 .6rem;padding-left:1.2rem}
+.blk li{margin-bottom:.35rem}
+.tag{display:inline-block;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;font-weight:600;
+  margin-bottom:.4rem;color:var(--muted)}
+.note{font-size:.82rem;line-height:1.5;color:var(--muted);margin:.5rem 0 0;font-style:italic}
+.src{font-size:.78rem;line-height:1.5;color:var(--muted);margin:.35rem 0 1rem .9rem;padding-left:.8rem;
+  border-left:1px dotted var(--line)}
+.ask{color:var(--flag);font-style:italic;font-size:.84rem;margin:.5rem 0 1rem .9rem}
+
+.tbl{overflow-x:auto;margin:.3rem 0 1rem}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:30rem}
+th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+th{font-weight:600;background:var(--accent-soft)}
+
+.ending{margin-top:3rem;border-top:2px solid var(--line);padding-top:1.5rem}
+.ending h2{border:0;margin-top:0}
+.meta-list{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1rem 1.1rem;font-size:.88rem;line-height:1.6}
+.meta-list b{font-weight:600}
+.hidden{display:none}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">1+1 · блоки для страницы услуги</p>
+  <h1>Инициативный аудит бухгалтерии: блоки для страницы услуги</h1>
+  <p class="srclink">Дорабатываем страницу: <a href="https://1-plus-1.ru/finansoviy-konsalting/initsiativnyy-audit-bukhgalterii/">1-plus-1.ru/finansoviy-konsalting/initsiativnyy-audit-bukhgalterii/</a></p>
+
+  <div class="legend">
+    <h2>Как читать</h2>
+    <ul>
+      <li><span class="chip keep"></span><span>Без заливки — текст, который уже есть на странице.</span></li>
+      <li><span class="chip tz"></span><span>Зелёное — новый блок по рекомендациям, этого на странице не было.</span></li>
+      <li><span class="chip fact"></span><span>Жёлтое — исправлено по первоисточнику: факт устарел или был неверен.</span></li>
+      <li><span class="chip lang"></span><span>Голубое — правка языка: смысл прежний, формулировка приведена к голосу компании.</span></li>
+    </ul>
+  </div>
+
+  <div class="filters">
+    <button data-f="all" aria-pressed="true">Показать всё</button>
+    <button data-f="changed" aria-pressed="false">Только изменения</button>
+    <button data-f="fact" aria-pressed="false">Только исправления фактов</button>
+    <button data-f="clean" aria-pressed="false">Чистовик без пометок</button>
+  </div>
+
+
+  <div class="blk fact"><span class="tag">Что важно знать до чтения</span>
+    <p><b>Это не статья, а пять блоков для существующей страницы услуги.</b> Страница не переписывается: H1, «Как мы работаем», «О нашем подходе» и строка о цене остаются как есть. Блоки ниже добавляются к ним — в том порядке, в котором идут здесь. Одно место рекомендации пришлось сформулировать точнее: субсидиарная ответственность там описана как «личные риски руководства при долгах перед бюджетом», а по закону это риск при банкротстве, и возникает он не от долга, а от того, что документы учёта утрачены или искажены.</p>
+  </div>
+
+  <div class="doc" id="doc">
+
+    <h2>Что даёт бизнесу инициативный аудит бухгалтерии</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Проверка нужна не ради самой проверки. Вот что собственник получает на выходе.</p>
+      <p><b>Готовность к налоговой проверке.</b> Инспекция вправе охватить выездной проверкой три календарных года, предшествующих году решения о её проведении. Инициативный аудит находит ошибки в этом же периоде — но до того, как их найдёт ФНС, и пока их ещё можно исправить уточнённой декларацией.</p>
+      <p><b>Понятная картина для сделок и финансирования.</b> Банк, инвестор или покупатель доли смотрит на отчётность. Проведённый аудит бухгалтерского и налогового учёта — всегда плюс в таком разговоре: вы приходите с проверенными цифрами, а не с обещанием, что всё в порядке.</p>
+      <p><b>Независимая оценка работы бухгалтерии.</b> Собственник редко может проверить учёт сам, а бухгалтер не станет искать собственные ошибки. Внешний взгляд отвечает на три вопроса: корректно ли ведётся учёт, хватает ли квалификации у сотрудников и какие налоговые риски уже накопились.</p>
+      <p><b>Исправления, а не только список ошибок.</b> По итогам проверки вы получаете письменный отчёт и устную консультацию: что найдено, чем это грозит и в каком порядке это чинить.</p>
+    </div>
+    <p class="src">Источник: <a href="https://www.consultant.ru/document/cons_doc_LAW_19671/">п. 4 ст. 89 НК РФ</a> — глубина выездной проверки. Проверено 21.11.2026</p>
+    <p class="note">Третий пункт опирается на то, что уже написано на странице: три вопроса, на которые отвечает проверка. Формулировка «компанию с проверенным учётом дороже оценят» не используется — такого обещания мы дать не можем, это зафиксировано в практике услуг.</p>
+
+    <h2>Типичные ситуации, в которых нужен инициативный аудит</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Чаще всего к нам приходят в одном из четырёх случаев.</p>
+      <p><b>Сменился главный бухгалтер или директор.</b> Принимать дела вслепую опасно: ошибки предшественника станут вашими. Проверка показывает, в каком состоянии учёт достался новому человеку, и фиксирует это документально.</p>
+      <p><b>Выручка растёт, а прибыль не растёт.</b> Если цифры в отчётности расходятся с ощущением от бизнеса, причина часто не в рынке, а в учёте: расходы разнесены неверно, аналитики не хватает, часть операций отражена не тем периодом.</p>
+      <p><b>Ждёте налоговую проверку.</b> Здесь проверка идёт глубже обычного — за три года, которые инспекция вправе охватить, и с упором на налоговые риски.</p>
+      <p><b>Готовите сделку: продажу доли, вход инвестора, покупку компании.</b> Предпродажный аудит показывает, что покупатель увидит в вашем учёте раньше, чем он туда посмотрит.</p>
+      <p>Под каждую из ситуаций подходит свой формат: комплексная проверка учёта и отчётности, экспресс-проверка, предпродажный аудит, проверка при смене бухгалтера. Что выбрать — решаем на первом разговоре, до договора.</p>
+    </div>
+    <p class="note">Четыре сценария — из рекомендаций. Форматы проверки взяты из практики компании: отдельный «налоговый аудит» и проверку одного участка не предлагаем, таких заказов нет.</p>
+
+    <h2>Риски бизнеса без независимой проверки бухгалтерии</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Запущенный учёт стоит дороже проверки. Вот чем именно.</p>
+      <div class="tbl"><table>
+        <tr><th>Что происходит</th><th>Чем это оборачивается</th></tr>
+        <tr><td>Отчётность искажена</td><td>Решения принимаются по неверным цифрам: собственник видит прибыль там, где её нет, и наоборот</td></tr>
+        <tr><td>Налоги занижены</td><td>Доначисление за три года, пени за весь срок и штраф 20% от неуплаченной суммы, а при умысле — 40%</td></tr>
+        <tr><td>Нет первички, счетов-фактур или регистров учёта</td><td>Штраф 10 000 ₽ за нарушение в пределах одного налогового периода, 30 000 ₽ — если больше одного; при занижении базы — 20% от неуплаченного налога, но не меньше 40 000 ₽</td></tr>
+        <tr><td>Налог занижен не меньше чем на 10% из-за искажения учёта</td><td>Административный штраф на руководителя или главного бухгалтера: от 5 000 до 10 000 ₽, при повторном нарушении — до 20 000 ₽ либо дисквалификация на срок от года до двух</td></tr>
+        <tr><td>Документы учёта утрачены или искажены, и компания идёт к банкротству</td><td>Руководителя могут привлечь к субсидиарной ответственности: закон исходит из того, что без документов требования кредиторов погасить невозможно по вине контролирующего лица</td></tr>
+      </table></div>
+      <p>Последняя строка — не про любые долги перед бюджетом, а про банкротство, и презумпция эта опровержима: руководитель вправе доказать, что документы ни при чём. Но доказывать придётся ему.</p>
+      <p>Хорошая новость в том, что почти всё из этого списка снимается до проверки. Ошибку, найденную самостоятельно, исправляют уточнённой декларацией: если недоимка и пени закрыты и на едином налоговом счёте есть положительное сальдо, штрафа не будет.</p>
+    </div>
+    <p class="src">Источник: <a href="https://www.consultant.ru/document/cons_doc_LAW_19671/0800d22c58c5f1413b74c0086f556ae84bfd4528/">п. 1–3 ст. 120 НК РФ</a>; <a href="https://www.consultant.ru/document/cons_doc_LAW_34661/b601eaef14558a22e40e549845ddc25563eb067e/">ч. 1 и 2 ст. 15.11 КоАП РФ</a>; <a href="https://www.consultant.ru/document/cons_doc_LAW_286130/e7c6077242f3a0397113ef610f89ec114f963500/">пп. 2 п. 2 ст. 61.11 Федерального закона от 26.10.2002 № 127-ФЗ</a>; <a href="https://www.consultant.ru/document/cons_doc_LAW_19671/">п. 4 ст. 89, п. 1 и 3 ст. 122, п. 4 ст. 122 НК РФ</a>. Проверено 21.11.2026</p>
+
+    <h2>Услуги аудита и бухгалтерского учёта: как устроена проверка</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Инициативный аудит — это добровольная проверка бухгалтерского и налогового учёта, которую компания заказывает по собственному решению, а не по требованию закона. Этим он отличается от обязательного аудита: тот проводится ежегодно, только аудиторскими организациями, и период с перечнем вопросов в нём заданы законом.</p>
+      <p>У инициативной проверки этих ограничений нет. Вы сами определяете, за какой период смотреть и что именно проверять. Законодательно такая проверка не закреплена, и проводить её может бухгалтер с нужным опытом и квалификацией — аудиторская организация для этого не требуется.</p>
+      <p><b>Что мы смотрим.</b> Состояние бухгалтерского и налогового учёта, бухгалтерскую и налоговую отчётность, первичную документацию, расчёты с бюджетом и налоговые риски. Это и есть аудит бухгалтерии организации в привычном смысле слова: не формальное заключение, а разбор того, что в учёте происходит на самом деле.</p>
+      <p><b>За какой период.</b> Чаще всего за год — он совпадает с периодом бухгалтерской отчётности. По запросу берём квартал, полугодие или девять месяцев. Три года проверяем, когда речь именно о рисках выездной налоговой проверки.</p>
+      <p><b>Что вы получаете.</b> Письменный отчёт по итогам работ и устную консультацию по выявленным ошибкам и рискам.</p>
+      <p><b>Сколько стоит.</b> Стоимость услуг аудита зависит от объёма работ, системы налогообложения и специфики предприятия — от 25 000 ₽. Точную сумму называем после того, как поймём объём: за что платить, видно до начала работы, а не после.</p>
+      <p>Если вы не уверены, нужна ли вам полная проверка, начните с разговора: мы обсудим задачу и подскажем, какой формат подойдёт — а иногда и то, что проверка пока не нужна.</p>
+    </div>
+    <p class="src">Источник: <a href="https://www.consultant.ru/document/cons_doc_LAW_83311/">ч. 2 и 3 ст. 5 Федерального закона от 30.12.2008 № 307-ФЗ</a> — обязательный аудит. Цена и состав работ — с действующей страницы услуги и из практики компании. Проверено 21.11.2026</p>
+    <p class="note">Это и есть SEO-текст по пятой рекомендации. Ключи распределены по смыслу: «инициативный аудит», «услуги аудита и бухгалтерского учёта» в H2, «аудит бухгалтерии организации», «стоимость услуг аудита». Из восьми ключей взяты четыре: остальные либо повторяют взятые, либо относятся к другому региону («стоимость инициативного аудита в москве»). В самой рекомендации сказано: вписывать все не нужно.</p>
+
+    <h2>Часто задаваемые вопросы об инициативном аудите бухгалтерии</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <h3>Обязательно ли заказывать аудит у аудиторской организации?</h3>
+      <p>Нет. Это требование обязательного аудита. Инициативная проверка законодательно не закреплена, и провести её может бухгалтер с опытом и квалификацией в нужной области. Поэтому и стоит она дешевле обязательной.</p>
+      <h3>Чем инициативный аудит отличается от обязательного?</h3>
+      <p>Обязательный проводится ежегодно, только аудиторскими организациями, и период с перечнем вопросов в нём заданы законом. Инициативный вы заказываете сами и сами определяете, что и за какой срок проверять.</p>
+      <h3>За какой период проверять учёт?</h3>
+      <p>Чаще всего за год: он совпадает с периодом бухгалтерской отчётности. Если готовитесь к налоговой проверке — за три года, именно столько инспекция вправе охватить. Для быстрой оценки хватает квартала или полугодия.</p>
+      <h3>Сколько стоит аудит бухгалтерии?</h3>
+      <p>От 25 000 ₽. Итоговая сумма зависит от объёма работ, системы налогообложения и специфики предприятия, и мы называем её до начала работы, а не по факту.</p>
+      <h3>Что я получу по итогам проверки?</h3>
+      <p>Письменный отчёт с выявленными ошибками и рисками и устную консультацию по нему. Это не заключение для налоговой, а рабочий документ для собственника и бухгалтерии.</p>
+      <h3>Что делать, если проверка найдёт занижение налога?</h3>
+      <p>Доплатить налог и пени, а затем подать уточнённую декларацию. Если на едином налоговом счёте непрерывно было положительное сальдо в размере недоимки, неуплата не признаётся правонарушением, и штрафа не будет.</p>
+      <h3>Нужно ли приезжать в офис и везти документы?</h3>
+      <p>Нет, работу можно вести удалённо: по доступу к учётной базе и сканам документов. Очная встреча нужна там, где так удобнее вам.</p>
+    </div>
+    <p class="src">Источник: <a href="https://www.consultant.ru/document/cons_doc_LAW_83311/">ч. 2 и 3 ст. 5 Федерального закона от 30.12.2008 № 307-ФЗ</a>; <a href="https://www.consultant.ru/document/cons_doc_LAW_19671/">п. 4 ст. 89 и п. 4 ст. 122 НК РФ</a>. Проверено 21.11.2026</p>
+    <p class="ask">Вопрос компании: последний ответ про удалённую работу я написал по аналогии с другими услугами — подтвердите, что по аудиту это так. И уточните, что именно входит в письменный отчёт: только перечень ошибок с рекомендациями или ещё и приоритет по рискам. От этого зависит ответ на пятый вопрос.</p>
+
+    <h2>Призыв к действию</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Не уверены, нужна ли проверка именно сейчас? Оставьте заявку — обсудим задачу, определим глубину проверки и назовём стоимость до начала работы. Если окажется, что аудит вам пока не нужен, скажем и об этом.</p>
+      <p class="note">Вести на существующую форму заявки страницы. Отдельный блок не нужен, если призыв уже стоит ниже по странице, — тогда этот текст заменяет подпись в нём.</p>
+    </div>
+  </div>
+
+  <div class="ending">
+    <h2>Что нужно от вас</h2>
+    <div class="blk tz"><span class="tag">Вопросы компании</span>
+      <ul>
+        <li><b>Сроки.</b> На странице их нет, и в практике они разные. Можно ли дать хотя бы вилку по экспресс-проверке — после цены это первый вопрос читателя.</li>
+        <li><b>Содержание отчёта.</b> Только перечень ошибок с рекомендациями или ещё и приоритет по рискам? Нужно для FAQ.</li>
+        <li><b>Удалённая работа.</b> Подтвердите, что аудит можно вести по доступу к базе и сканам.</li>
+        <li><b>Кнопка «Скачать прайс».</b> Файл открывается сразу или нужно оставить заявку? Если нужно — скажем об этом прямо в FAQ, иначе читатель нажмёт и закроет страницу.</li>
+        <li><b>Кейсы.</b> Ставить ли ссылки на подходящие кейсы: IT-компания с устранённым убытком более 20 млн ₽, НКО с возвратом 850 000 ₽ переплаты, производство упаковки с восстановлением учёта. В рекомендациях по этой странице блока кейсов нет, но он ей идёт.</li>
+      </ul>
+    </div>
+
+    <h2>Метаданные для размещения</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <div class="meta-list">
+        <p><b>Title</b> (58 знаков): Инициативный аудит бухгалтерии в Барнауле — от 25 000 ₽</p>
+        <p><b>Description</b> (156 знаков): Инициативный аудит бухгалтерского и налогового учёта: когда нужен, что проверяем, какие риски снимает и сколько стоит. Отчёт с ошибками и консультация.</p>
+        <p><b>URL:</b> прежний — /finansoviy-konsalting/initsiativnyy-audit-bukhgalterii/</p>
+        <p><b>Ключи:</b> взяты четыре из восьми — инициативный аудит (1175), услуги аудита и бухгалтерского учета (276), аудит бухгалтерии организации (56), аудит стоимость услуг (226). Остальные повторяют взятые или относятся к другому региону.</p>
+        <p><b>Порядок блоков:</b> после существующего блока «Как мы работаем» — «Что даёт бизнесу», «Типичные ситуации», «Риски», затем текстовый блок «Услуги аудита и бухгалтерского учёта», в конце «Вопрос-ответ» и призыв к действию.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var doc = document.getElementById('doc');
+  var btns = Array.prototype.slice.call(document.querySelectorAll('.filters button'));
+  function apply(mode){
+    var blocks = doc.querySelectorAll('.blk');
+    var notes = doc.querySelectorAll('.note');
+    var tags = doc.querySelectorAll('.tag');
+    var srcs = doc.querySelectorAll('.src, .ask');
+    Array.prototype.forEach.call(blocks, function(b){
+      var isKeep = b.classList.contains('keep');
+      var isFact = b.classList.contains('fact');
+      if(mode==='changed') b.hidden = isKeep;
+      else if(mode==='fact') b.hidden = !isFact;
+      else b.hidden = false;
+    });
+    Array.prototype.forEach.call(notes, function(n){ n.hidden = (mode==='clean'); });
+    Array.prototype.forEach.call(tags, function(t){ t.hidden = (mode==='clean'); });
+    Array.prototype.forEach.call(srcs, function(s){ s.hidden = (mode==='clean'); });
+    if(mode==='clean'){
+      Array.prototype.forEach.call(blocks, function(b){ b.style.background='transparent'; b.style.borderLeftColor='transparent'; b.style.paddingLeft='0'; });
+    } else {
+      Array.prototype.forEach.call(blocks, function(b){ b.style.background=''; b.style.borderLeftColor=''; b.style.paddingLeft=''; });
+    }
+    var hs = doc.querySelectorAll('h2');
+    Array.prototype.forEach.call(hs, function(h){
+      var any=false, el=h.nextElementSibling;
+      while(el && el.tagName!=='H2'){ if(el.classList.contains('blk') && !el.hidden) any=true; el=el.nextElementSibling; }
+      h.hidden = !any;
+    });
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      btns.forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+      apply(b.dataset.f);
+    });
+  });
+  apply('all');
+})();
+</script>
