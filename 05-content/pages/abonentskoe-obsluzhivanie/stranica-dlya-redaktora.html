@@ -1,0 +1,300 @@
+<title>Абонентское обслуживание — блоки для страницы</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Макет: одна колонка документа; слева цветная полоса статуса абзаца, под фактами — строка источника */
+:root{
+  --bg:#f7f7f4; --surface:#ffffff; --fg:#23251f; --muted:#6b6f63; --line:#dedfd6;
+  --accent:#6f7a2e; --accent-soft:#eef0df; --flag:#c2185b; --on-accent:#ffffff;
+  --keep-bar:#c9cbc0; --keep-bg:transparent;
+  --tz-bar:#6f9c4a; --tz-bg:#edf4e6;
+  --fact-bar:#c9a227; --fact-bg:#fbf3dc;
+  --lang-bar:#4a7d9c; --lang-bg:#e7f0f6;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1a1c18; --surface:#222520; --fg:#e6e7df; --muted:#9a9e90; --line:#363a31;
+  --accent:#a8b863; --accent-soft:#2b3022; --flag:#ff6f9f; --on-accent:#1a1c18;
+  --keep-bar:#4a4e44; --keep-bg:transparent;
+  --tz-bar:#6f9c4a; --tz-bg:#232e1d;
+  --fact-bar:#c9a227; --fact-bg:#322a16;
+  --lang-bar:#4a7d9c; --lang-bg:#1b2730;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1c18; --surface:#222520; --fg:#e6e7df; --muted:#9a9e90; --line:#363a31;
+  --accent:#a8b863; --accent-soft:#2b3022; --flag:#ff6f9f; --on-accent:#1a1c18;
+  --keep-bar:#4a4e44; --keep-bg:transparent;
+  --tz-bar:#6f9c4a; --tz-bg:#232e1d;
+  --fact-bar:#c9a227; --fact-bg:#322a16;
+  --lang-bar:#4a7d9c; --lang-bg:#1b2730;
+  color-scheme:dark}
+
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);margin:0}
+.wrap{max-width:46rem;margin:0 auto;padding-block:2rem 4rem;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.eyebrow{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 .6rem}
+h1{font-family:var(--serif);font-size:clamp(1.7rem,4.5vw,2.3rem);line-height:1.15;margin:0 0 .7rem;text-wrap:balance;font-weight:600}
+.meta{color:var(--muted);font-size:.85rem;line-height:1.5;margin:0 0 1.8rem}
+
+.legend{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1rem 1.1rem;margin-bottom:1.2rem}
+.legend h2{font-size:.95rem;margin:0 0 .7rem;font-weight:600}
+.legend ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+.legend li{display:flex;gap:.6rem;align-items:flex-start;font-size:.86rem;line-height:1.45}
+.chip{flex:0 0 auto;width:1.1rem;height:1.1rem;border-radius:2px;border:1px solid var(--line);margin-top:.1rem}
+.chip.keep{background:var(--surface)}.chip.tz{background:var(--tz-bg);border-color:var(--tz-bar)}
+.chip.fact{background:var(--fact-bg);border-color:var(--fact-bar)}.chip.lang{background:var(--lang-bg);border-color:var(--lang-bar)}
+
+.filters{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:2rem}
+.filters button{font-family:var(--sans);font-size:.82rem;padding:.42rem .8rem;border-radius:3px;
+  border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.filters button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.doc h2{font-family:var(--serif);font-size:1.3rem;margin:2.2rem 0 .8rem;font-weight:600;text-wrap:balance;
+  padding-bottom:.35rem;border-bottom:1px solid var(--line)}
+.doc h3{font-size:1rem;margin:1.4rem 0 .5rem;font-weight:600}
+
+.blk{border-left:3px solid var(--keep-bar);padding:.25rem 0 .25rem .9rem;margin:0 0 .9rem}
+.blk.tz{border-color:var(--tz-bar);background:var(--tz-bg)}
+.blk.fact{border-color:var(--fact-bar);background:var(--fact-bg)}
+.blk.lang{border-color:var(--lang-bar);background:var(--lang-bg)}
+.blk.tz,.blk.fact,.blk.lang{padding:.6rem .9rem .6rem .9rem;border-radius:0 3px 3px 0}
+.blk p{font-family:var(--serif);font-size:1.03rem;line-height:1.65;margin:0 0 .7rem}
+.blk p:last-child{margin-bottom:0}
+.blk ul,.blk ol{font-family:var(--serif);font-size:1.03rem;line-height:1.6;margin:.2rem 0 .6rem;padding-left:1.2rem}
+.blk li{margin-bottom:.35rem}
+.tag{display:inline-block;font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;font-weight:600;
+  margin-bottom:.4rem;color:var(--muted)}
+.note{font-size:.82rem;line-height:1.5;color:var(--muted);margin:.5rem 0 0;font-style:italic}
+.src{font-size:.78rem;line-height:1.5;color:var(--muted);margin:.35rem 0 1rem .9rem;padding-left:.8rem;
+  border-left:1px dotted var(--line)}
+.ask{color:var(--flag);font-style:italic;font-size:.84rem;margin:.5rem 0 1rem .9rem}
+
+.tbl{overflow-x:auto;margin:.3rem 0 1rem}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:30rem}
+th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.45}
+th{font-weight:600;background:var(--accent-soft)}
+
+.ending{margin-top:3rem;border-top:2px solid var(--line);padding-top:1.5rem}
+.ending h2{border:0;margin-top:0}
+.meta-list{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:1rem 1.1rem;font-size:.88rem;line-height:1.6}
+.meta-list b{font-weight:600}
+.hidden{display:none}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">1+1 · блоки для страницы услуги</p>
+  <h1>Абонентское бухгалтерское обслуживание: блоки для страницы услуги</h1>
+  <p class="srclink">Дорабатываем страницу: <a href="https://1-plus-1.ru/bukhgalterskie-uslugi/abonentskoe-obsluzhivanie/">1-plus-1.ru/bukhgalterskie-uslugi/abonentskoe-obsluzhivanie/</a></p>
+
+  <div class="legend">
+    <h2>Как читать</h2>
+    <ul>
+      <li><span class="chip keep"></span><span>Без заливки — текст, который уже есть на странице.</span></li>
+      <li><span class="chip tz"></span><span>Зелёное — новый блок по рекомендациям, этого на странице не было.</span></li>
+      <li><span class="chip fact"></span><span>Жёлтое — исправлено по первоисточнику: факт устарел или был неверен.</span></li>
+      <li><span class="chip lang"></span><span>Голубое — правка языка: смысл прежний, формулировка приведена к голосу компании.</span></li>
+    </ul>
+  </div>
+
+  <div class="filters">
+    <button data-f="all" aria-pressed="true">Показать всё</button>
+    <button data-f="changed" aria-pressed="false">Только изменения</button>
+    <button data-f="fact" aria-pressed="false">Только исправления фактов</button>
+    <button data-f="clean" aria-pressed="false">Чистовик без пометок</button>
+  </div>
+
+
+
+  <div class="blk fact"><span class="tag">Что важно знать до чтения</span>
+    <p><b>Главная находка: блок «Как мы работаем?» на странице работу не описывает.</b> Под этим заголовком сейчас перечень того, что компания делает — оформляем первичку, начисляем зарплату, считаем налоги. Это состав услуги, а не процесс. Клиент так и не узнаёт, что произойдёт после того, как он оставит заявку. Рекомендация просит сделать из блока путь клиента, и это самая ценная правка из девяти.</p>
+    <p>Второе: тарифы на странице есть, но из них не видно, почему «от 10 500 ₽». Блок о том, от чего зависит цена, снимает главное подозрение — что на деле выйдет втрое дороже.</p>
+    <p>Четыре шага пути клиента и упоминание ЭДО взяты из рекомендации и помечены вопросом: в наших материалах этого нет, подтвердите или поправьте.</p>
+  </div>
+
+  <div class="doc" id="doc">
+
+    <h2>Что входит в абонентское обслуживание и как это защищает ваш бизнес</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Абонентское бухгалтерское обслуживание — это передача всего учёта компании на аутсорсинг: ведение учёта, расчёт налогов, зарплата, сдача отчётности и общение с налоговой. Вы платите фиксированную сумму в месяц и не держите бухгалтерию в штате.</p>
+      <p>Смысл услуги не в том, чтобы кто-то делал проводки вместо вас. Смысл в том, что каждый участок закрыт и за каждым кто-то следит: срок сдачи не пропущен, требование из налоговой не осталось без ответа, зарплата посчитана с актуальными ставками взносов, а первичка не копится в коробке до марта.</p>
+      <p>Ниже — что именно входит в обслуживание и что происходит, когда этим никто не занимается.</p>
+    </div>
+
+    <h2>Из чего складывается абонентское обслуживание</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <h3>Первичный учёт</h3>
+      <p>Принимаем и проверяем документы, отражаем операции в учёте, следим за тем, чтобы закрывающие документы от поставщиков дошли и были оформлены правильно.</p>
+      <p><b>Если этого не делать.</b> Отсутствие первичных документов и регистров учёта — это грубое нарушение правил учёта: штраф 10 000 ₽, если нарушение уложилось в один налоговый период, 30 000 ₽ — если выходит за его пределы. Если из-за этого занижена налоговая база — 20% от неуплаченного налога, но не меньше 40 000 ₽.</p>
+      <h3>Налоги и взносы</h3>
+      <p>Рассчитываем налоги и страховые взносы по вашему режиму, готовим платежи, следим за изменениями ставок и лимитов.</p>
+      <p><b>Если этого не делать.</b> Неуплата или неполная уплата налога — штраф 20% от суммы, а если инспекция докажет умысел — 40%. Плюс пени за каждый день просрочки.</p>
+      <h3>Зарплата и кадры</h3>
+      <p>Начисляем зарплату, считаем НДФЛ и взносы, готовим отчётность по сотрудникам.</p>
+      <p><b>Если этого не делать.</b> Ошибки на этом участке видно быстрее всего: сотрудники приходят с претензиями по расчётам, а отчётность по работникам сдаётся ежемесячно и ежеквартально, так что просрочка накапливается быстро.</p>
+      <h3>Отчётность</h3>
+      <p>Сдаём налоговую и бухгалтерскую отчётность в срок, отвечаем на требования инспекции, сопровождаем проверки.</p>
+      <p><b>Если этого не делать.</b> Непредставленная декларация стоит 5% от неуплаченной суммы налога за каждый месяц просрочки — до 30% и не меньше 1 000 ₽; нулевая декларация от штрафа не спасает. А если декларация не сдана в течение 20 дней после срока, инспекция вправе заблокировать счета. Снимут блокировку не позже чем на следующий день после сдачи, но эти дни бизнес стоит.</p>
+    </div>
+    <p class="src">Источник: <a href="https://www.consultant.ru/document/cons_doc_LAW_19671/0800d22c58c5f1413b74c0086f556ae84bfd4528/">п. 1–3 ст. 120 НК РФ</a>; <a href="https://www.consultant.ru/document/cons_doc_LAW_19671/">п. 1 и 3 ст. 122 НК РФ</a>; <a href="https://www.consultant.ru/document/cons_doc_LAW_19671/d9beb5691273fac122dfc8c6257fedd2b31116ca/">п. 1 ст. 119 НК РФ</a>; <a href="https://www.consultant.ru/document/cons_doc_LAW_19671/b34620a176b02a652a43343fb33498958a11a2dd/">пп. 1 п. 3 ст. 76 НК РФ</a>. Проверено 21.11.2026</p>
+    <p class="note">Состав участков взят из того, что уже перечислено на странице в блоке «Как мы работаем?». Новое здесь — группировка по четырём участкам и строки «если этого не делать», как просит рекомендация.</p>
+
+    <h2>Прозрачность на каждом этапе: от передачи документов до сдачи отчёта</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Срок приёма дел — три рабочих дня. Дальше работа идёт по одному и тому же кругу каждый месяц.</p>
+      <div class="tbl"><table>
+        <tr><th>Шаг</th><th>Что происходит</th></tr>
+        <tr><td><b>1. Вы передаёте документы</b></td><td>Сканы или фото в удобном вам виде, в удобное время — везти оригиналы в офис не нужно</td></tr>
+        <tr><td><b>2. Мы обрабатываем</b></td><td>Проверяем документы на ошибки и нехватку закрывающих, заносим в учётную базу</td></tr>
+        <tr><td><b>3. Согласовываем суммы</b></td><td>Рассчитываем налоги и взносы и показываем расчёт до уплаты — вы видите, за что платите</td></tr>
+        <tr><td><b>4. Сдаём отчётность</b></td><td>Отправляем декларации и расчёты в срок</td></tr>
+        <tr><td><b>5. Отчитываемся о результате</b></td><td>Вы получаете подтверждение приёма отчётности и понимаете, что период закрыт</td></tr>
+      </table></div>
+      <p>Если в течение месяца приходит требование из налоговой, его обрабатываем мы — отдельной платы за это нет.</p>
+    </div>
+    <p class="ask">Вопрос компании: три детали в этой таблице взяты из рекомендации, а не из наших материалов, — подтвердите или поправьте. Первое: как клиент передаёт документы (чат, облако, личный кабинет?). Второе: показываем ли мы расчёт налога до уплаты. Третье: сдаём ли отчётность через ЭДО и говорить ли об этом. Без ответов шаги 1, 3 и 4 останутся общими словами.</p>
+
+    <h2>Выберите тариф под задачи вашего бизнеса</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Тариф зависит не от размера компании вообще, а от четырёх понятных вещей. Их видно до начала работы, поэтому цену мы называем сразу, а не «по результатам первого месяца».</p>
+      <div class="tbl"><table>
+        <tr><th>От чего зависит цена</th><th>Что это значит на практике</th></tr>
+        <tr><td><b>Количество операций в месяц</b></td><td>Сколько первичных документов проходит через учёт: десяток накладных или несколько сотен</td></tr>
+        <tr><td><b>Количество сотрудников</b></td><td>Один директор в штате или разветвлённая структура с отпусками, больничными и сменным графиком</td></tr>
+        <tr><td><b>Налоговый режим</b></td><td>УСН «доходы» считается проще всего; «доходы минус расходы» требует подтверждать каждый расход; на ОСНО добавляются НДС и налог на прибыль</td></tr>
+        <tr><td><b>Внешнеэкономическая деятельность</b></td><td>Экспорт и импорт — это валютный контроль, подтверждение нулевой ставки НДС и работа с таможенными документами</td></tr>
+      </table></div>
+      <p>Отсюда и устроены тарифы: УСН 6%, УСН 15% и ОСНО — от 10 500 ₽ в месяц, остальные режимы считаем по запросу. Внутри каждого тарифа сумма зависит от первых двух факторов, поэтому точную цифру мы называем после короткого разговора о вашем объёме.</p>
+      <p>Что входит в любой тариф: ведение учёта, расчёт налогов и взносов, зарплата, сдача отчётности и ответы на требования налоговой. Мы не берём отдельную плату за каждое письмо из инспекции.</p>
+    </div>
+    <p class="note">Тарифы и цена «от 10 500 ₽/мес» — с действующей страницы, не менялись. Четыре фактора — из рекомендации. Последний абзац нужно подтвердить: входят ли ответы на требования в тариф без доплаты.</p>
+
+    <h2>Мы работаем со всеми видами деятельности</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Отрасль меняет не состав работ, а то, где в учёте возникают ошибки. Вот что мы уже ведём:</p>
+      <ul>
+        <li><b>Розничная торговля и маркетплейсы</b> — отчёты площадок, возвраты, учёт по нескольким каналам продаж;</li>
+        <li><b>Производство</b> — себестоимость, прямые и косвенные расходы, учёт материалов и готовой продукции;</li>
+        <li><b>Общепит и пекарни</b> — несколько точек, списания, сменный персонал;</li>
+        <li><b>IT</b> — льготы и подтверждение права на них, учёт по проектам;</li>
+        <li><b>Экспорт</b> — нулевая ставка НДС и её подтверждение, валютный контроль;</li>
+        <li><b>Некоммерческие организации</b> — целевое финансирование и раздельный учёт.</li>
+      </ul>
+      <p>Если вашей отрасли в списке нет, это не значит, что мы с ней не работали: на обслуживании больше 400 компаний. Процессы у нас одинаковые для всех — различается только то, за чем следить внимательнее.</p>
+    </div>
+    <p class="note">Отрасли названы по реальным кейсам компании, не придуманы. Цифра «400+ компаний» — со страницы.</p>
+
+    <h2>Частые вопросы об абонентском обслуживании</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <h3>Что делать, если налоговая прислала требование?</h3>
+      <p>Переслать его нам. Разбираем, что запрашивает инспекция, готовим ответ и подаём его в срок. Это входит в обслуживание, отдельно платить не нужно.</p>
+      <h3>Кто будет отвечать, если бухгалтер допустит ошибку?</h3>
+      <p>Перед налоговой за учёт всегда отвечает сама компания: закон возлагает организацию бухгалтерского учёта на руководителя, и передача учёта на сторону эту обязанность не снимает. Но перед вами за свою работу отвечаем мы, и эта ответственность застрахована на 10 млн ₽. На практике за 2025 год у наших клиентов не было штрафов больше 100 ₽.</p>
+      <h3>Как передавать документы — нужно ли везти их в офис?</h3>
+      <p>Не нужно. Работаем со сканами и фотографиями, оригиналы остаются у вас.</p>
+      <h3>Можно ли начать с частичного обслуживания?</h3>
+      <p>Да, если вам нужен не весь учёт, а отдельный участок — например, только зарплата и кадры или только отчётность. Объём обсуждаем до договора, он же определяет цену.</p>
+      <h3>Сколько занимает передача дел?</h3>
+      <p>Срок приёма дел — три рабочих дня. После этого мы работаем с вашим учётом в обычном режиме.</p>
+      <h3>А если учёт запущен и его сначала нужно привести в порядок?</h3>
+      <p>Это отдельная услуга — восстановление учёта. Сначала приводим в порядок прошлые периоды, затем переходим на обслуживание. Так дешевле: вести запущенный учёт дороже, чем восстановленный.</p>
+      <h3>Что будет, если мы передадим документы с опозданием?</h3>
+      <p>Скажем об этом сразу и назовём срок, до которого документ ещё можно учесть в текущем периоде. Сроки сдачи отчётности жёсткие, и единственный способ их не нарушить — знать о проблеме заранее, а не в последний день.</p>
+    </div>
+    <p class="src">Источник: <a href="https://www.consultant.ru/document/cons_doc_LAW_122855/">ч. 1 ст. 7 Федерального закона от 06.12.2011 № 402-ФЗ</a>. Страховка на 10 млн ₽ и статистика по штрафам — с действующей страницы. Проверено 21.11.2026</p>
+    <p class="ask">Вопрос компании: подтвердите ответы на второй, четвёртый и седьмой вопросы. Частичное обслуживание — работаем ли мы так и с каких участков можно начать. Про опоздание с документами — это моё предположение о том, как устроен процесс, замените на то, как есть.</p>
+
+    <h2>Другие услуги</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <ul>
+        <li><a href="https://1-plus-1.ru/bukhgalterskie-uslugi/vosstanovlenie-ucheta/">Восстановление бухгалтерского учёта</a> — если учёт запущен или база утрачена</li>
+        <li><a href="https://1-plus-1.ru/finansoviy-konsalting/initsiativnyy-audit-bukhgalterii/">Инициативный аудит бухгалтерии</a> — проверить, в каком состоянии учёт на самом деле</li>
+        <li><a href="https://1-plus-1.ru/bukhgalterskie-uslugi/konsultatsii/">Консультации</a> — разовый вопрос без перехода на обслуживание</li>
+        <li><a href="https://1-plus-1.ru/bukhgalterskie-uslugi/zapolnenie-deklaratsiy/">Заполнение деклараций</a> — если нужна только отчётность</li>
+      </ul>
+    </div>
+    <p class="note">Ссылки ведут на четыре страницы услуг, адреса которых подтверждены. Если в блок нужно добавить другие направления — пришлите адреса, я не ставлю ссылки на страницы, которых не видел.</p>
+
+    <h2>Призыв к действию</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <p>Расскажите о своём бизнесе — сколько операций в месяц, сколько сотрудников, какой режим. Назовём точную стоимость обслуживания и срок, за который примем дела. Если увидим, что вам выгоднее другая услуга, скажем об этом прямо.</p>
+    </div>
+  </div>
+
+  <div class="ending">
+    <h2>Заголовок страницы: что предлагаю</h2>
+    <div class="blk tz"><span class="tag">По рекомендации</span>
+      <p>Сейчас: «Команда удалённых бухгалтеров для всех видов бизнеса от 10 500 ₽/мес». Услуга в нём не названа, поэтому страница не отвечает на запрос «абонентское бухгалтерское обслуживание».</p>
+      <p><b>Предлагаю:</b> «Абонентское бухгалтерское обслуживание ООО и ИП в Барнауле — от 10 500 ₽/мес».</p>
+      <p>Здесь есть всё, что было: цена и обращение к любому бизнесу, — и добавлено название услуги с городом. Два других варианта из рекомендации тоже рабочие: «Абонентское бухгалтерское обслуживание для бизнеса в Барнауле» и «Комплексное абонентское обслуживание: аутсорсинг бухгалтерии для компаний». Первый короче, второй захватывает запрос про аутсорсинг.</p>
+      <p>Подзаголовок под H1 оставить как есть — «Команда удалённых бухгалтеров для всех видов бизнеса»: он объясняет формат работы и в заголовке больше не нужен.</p>
+    </div>
+
+    <h2>Что нужно от вас</h2>
+    <div class="blk tz"><span class="tag">Вопросы компании</span>
+      <ul>
+        <li><b>Путь клиента.</b> Как передаются документы — чат, облако, личный кабинет? Показываем ли расчёт налога до уплаты? Сдаём ли отчётность через ЭДО? Эти три детали в таблице пока по рекомендации, а не по нашей практике.</li>
+        <li><b>Требования налоговой.</b> Ответы на требования входят в тариф без доплаты — так?</li>
+        <li><b>Частичное обслуживание.</b> Работаем ли с отдельными участками и с каких можно начать.</li>
+        <li><b>Опоздание с документами.</b> Как процесс устроен на самом деле: предупреждаем клиента, ставим дедлайн, переносим в следующий период?</li>
+        <li><b>Отрасли.</b> Проверьте список: он собран по кейсам. Что-то добавить или убрать?</li>
+        <li><b>Другие услуги.</b> Если в блок перелинковки нужны ещё направления — пришлите адреса страниц.</li>
+      </ul>
+    </div>
+
+    <h2>Метаданные для размещения</h2>
+    <div class="blk tz"><span class="tag">Новый блок</span>
+      <div class="meta-list">
+        <p><b>H1:</b> Абонентское бухгалтерское обслуживание ООО и ИП в Барнауле — от 10 500 ₽/мес</p>
+        <p><b>Title</b> (59 знаков): Абонентское бухгалтерское обслуживание в Барнауле от 10 500 ₽</p>
+        <p><b>Description</b> (158 знаков): Абонентское бухгалтерское обслуживание ООО и ИП: ведение учёта, зарплата, налоги и отчётность под ключ. Тарифы от 10 500 ₽/мес, приём дел за 3 дня.</p>
+        <p><b>URL:</b> прежний — /bukhgalterskie-uslugi/abonentskoe-obsluzhivanie/</p>
+        <p><b>Порядок блоков:</b> H1 → существующие тезисы → «Что входит и как это защищает» → «Из чего складывается» → «Прозрачность на каждом этапе» (заменяет нынешний блок «Как мы работаем?») → тарифы с новым текстом → отрасли → компания в цифрах и отзывы (как есть) → «Частые вопросы» → «Другие услуги» → призыв к действию.</p>
+        <p><b>Важно для вёрстки:</b> блок «Как мы работаем?» не дополняется, а заменяется: сейчас под этим заголовком перечень услуг, а не этапы. Сам перечень не пропадает — он вошёл в блок «Из чего складывается абонентское обслуживание».</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var doc = document.getElementById('doc');
+  var btns = Array.prototype.slice.call(document.querySelectorAll('.filters button'));
+  function apply(mode){
+    var blocks = doc.querySelectorAll('.blk');
+    var notes = doc.querySelectorAll('.note');
+    var tags = doc.querySelectorAll('.tag');
+    var srcs = doc.querySelectorAll('.src, .ask');
+    Array.prototype.forEach.call(blocks, function(b){
+      var isKeep = b.classList.contains('keep');
+      var isFact = b.classList.contains('fact');
+      if(mode==='changed') b.hidden = isKeep;
+      else if(mode==='fact') b.hidden = !isFact;
+      else b.hidden = false;
+    });
+    Array.prototype.forEach.call(notes, function(n){ n.hidden = (mode==='clean'); });
+    Array.prototype.forEach.call(tags, function(t){ t.hidden = (mode==='clean'); });
+    Array.prototype.forEach.call(srcs, function(s){ s.hidden = (mode==='clean'); });
+    if(mode==='clean'){
+      Array.prototype.forEach.call(blocks, function(b){ b.style.background='transparent'; b.style.borderLeftColor='transparent'; b.style.paddingLeft='0'; });
+    } else {
+      Array.prototype.forEach.call(blocks, function(b){ b.style.background=''; b.style.borderLeftColor=''; b.style.paddingLeft=''; });
+    }
+    var hs = doc.querySelectorAll('h2');
+    Array.prototype.forEach.call(hs, function(h){
+      var any=false, el=h.nextElementSibling;
+      while(el && el.tagName!=='H2'){ if(el.classList.contains('blk') && !el.hidden) any=true; el=el.nextElementSibling; }
+      h.hidden = !any;
+    });
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      btns.forEach(function(x){ x.setAttribute('aria-pressed', String(x===b)); });
+      apply(b.dataset.f);
+    });
+  });
+  apply('all');
+})();
+</script>
